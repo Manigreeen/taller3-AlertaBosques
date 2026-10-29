@@ -70,6 +70,23 @@ def best_action(distribution: dict, actions: dict) -> tuple[str, dict]:
     # Validación de las acciones; no modificar.
     if not actions:
         raise ValueError("Se requiere al menos una acción")
-    # TODO: Add your code here
-    raise NotImplementedError("Complete este bloque TODO")
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+
+    accion_elegida = ""
+    accion_elegida_eu = 0
+    eu_acciones = {}
+    for action in actions:
+
+        accion_eu = expected_utility(distribution, actions[action])
+        eu_acciones[action] = accion_eu
+        
+        if accion_elegida == "":
+            accion_elegida = action
+            accion_elegida_eu = accion_eu
+        else:
+            if accion_eu > accion_elegida_eu:
+                accion_elegida = action
+                accion_elegida_eu = accion_eu
+
+    return (accion_elegida, eu_acciones)
+            
+
