@@ -48,9 +48,12 @@ def expected_utility(distribution: dict, utilities: dict) -> float:
         raise ValueError("La distribución debe sumar uno")
     if any(not math.isfinite(u) for u in utilities.values()):
         raise ValueError("Utilidades no finitas")
-    # TODO: Add your code here
-    raise NotImplementedError("Complete este bloque TODO")
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+
+    eu = 0
+    for resultado in distribution:
+        eu += distribution[resultado]*utilities[resultado]
+
+    return eu
 
 
 def best_action(distribution: dict, actions: dict) -> tuple[str, dict]:
