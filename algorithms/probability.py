@@ -12,9 +12,20 @@ def normalize(weights: dict) -> dict:
     - Conserve las claves y su orden; no modifique weights.
     - Rechace pesos negativos, no finitos, diccionarios vacíos y suma cero.
     """
-    # TODO: Add your code here
-    raise NotImplementedError("Complete este bloque TODO")
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    z = sum(weights.values())
+
+    if z == 0 or not weights:
+        raise ValueError("Diccionario de pesos inválido...")
+    
+    weights_z = {}
+    for resultado in weights:
+
+        if weights[resultado] < 0 or not math.isfinite(weights[resultado]):
+            raise ValueError("Peso inválido (inf o negativo)...")
+
+        weights_z[resultado] = weights[resultado] / z
+    
+    return weights_z
 
 
 def expected_utility(distribution: dict, utilities: dict) -> float:
