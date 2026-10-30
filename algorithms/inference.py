@@ -50,8 +50,13 @@ def enumeration_ask(network, query: str, evidence: dict) -> dict:
 
     pesos = {}
     for valor in (0,1):
-        # une el diccionario de evidencia con la variable consulta fijada en este momento en un solo diccionario
-        eventos_pasados = {**evidence, query: valor}
-        pesos[valor] = _recorrer_red(network, network.variables[:], eventos_pasados)
+
+        # verificar si la consulta ya está observada y si el valor actual lo contradice; saltar de una vez
+        if query in evidence and evidence[query] != valor:
+          pesos[valor] = 0
+        else:
+          # une el diccionario de evidencia con la variable consulta fijada en este momento en un solo diccionario
+          eventos_pasados = {**evidence, query: valor}
+          pesos[valor] = _recorrer_red(network, network.variables[:], eventos_pasados)
 
     return normalize(pesos)
