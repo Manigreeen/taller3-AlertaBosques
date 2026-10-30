@@ -2,6 +2,30 @@
 from algorithms.probability import normalize
 
 
+def _recorrer_red(network, variables_pendientes: list, eventos_pasados: dict)->float:
+    
+    if not variables_pendientes:
+        return 1
+    
+    elif variables_pendientes[0] in eventos_pasados:
+        y = variables_pendientes[0]
+        nuevos_eventos = {**eventos_pasados, y: eventos_pasados[y]}
+        return (
+            network.probability(y, eventos_pasados[y], eventos_pasados) * _recorrer_red(network, variables_pendientes[1:], nuevos_eventos)
+            )
+
+    else:
+        p_y = 0
+        y = variables_pendientes[0]
+        
+        for valor in (0,1):
+            nuevos_eventos = {**eventos_pasados, y: valor}
+            p_y += (
+                network.probability(y, valor, eventos_pasados) * _recorrer_red(network, variables_pendientes[1:], nuevos_eventos)
+                )
+        
+        return p_y
+
 def enumeration_ask(network, query: str, evidence: dict) -> dict:
     """Calcula P(query | evidence) sobre la conjunta factorizada.
 
@@ -24,6 +48,10 @@ def enumeration_ask(network, query: str, evidence: dict) -> dict:
     # Valida nombres de variables y dominio de la evidencia.
     network.validate_query(query, evidence)
 
-    # TODO: Add your code here
-    raise NotImplementedError("Complete este bloque TODO")
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    pesos = {}
+    for valor in (0,1):
+        # une el diccionario de evidencia con la variable consulta fijada en este momento en un solo diccionario
+        eventos_pasados = {**evidence, query: valor}
+        pesos[valor] = _recorrer_red(network, network.variables[:], eventos_pasados)
+
+    return normalize(pesos)
